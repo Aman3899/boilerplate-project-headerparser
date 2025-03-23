@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 3000;
 
 // Serve static files from public directory
 app.use(express.static("public"));
@@ -19,16 +19,10 @@ app.get("/", (req, res) => {
 
 // API endpoint for header parsing
 app.get("/api/whoami", (req, res) => {
-    // Extract IP address (works locally and on Vercel with X-Forwarded-For)
     const ipaddress = req.headers["x-forwarded-for"]?.split(",")[0] || req.ip;
-
-    // Extract preferred language from Accept-Language header
     const language = req.headers["accept-language"]?.split(",")[0] || "en-US";
-
-    // Extract software/system info from User-Agent header
     const software = req.headers["user-agent"] || "Unknown";
 
-    // Return JSON response
     res.json({
         ipaddress,
         language,
@@ -36,7 +30,9 @@ app.get("/api/whoami", (req, res) => {
     });
 });
 
-// Start the server
+// Start the server locally (not needed for Vercel, but useful for testing)
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
+
+module.exports = app; // Export for Vercel
