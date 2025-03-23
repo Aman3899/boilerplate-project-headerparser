@@ -1,30 +1,42 @@
-// index.js
-// where your node app starts
+const express = require("express");
+const app = express();
+const PORT = process.env.PORT || 4000;
 
-// init project
-require('dotenv').config();
-var express = require('express');
-var app = express();
+// Serve static files from public directory
+app.use(express.static("public"));
 
-// enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
-// so that your API is remotely testable by FCC
-var cors = require('cors');
-app.use(cors({ optionsSuccessStatus: 200 })); // some legacy browsers choke on 204
-
-// http://expressjs.com/en/starter/static-files.html
-app.use(express.static('public'));
-
-// http://expressjs.com/en/starter/basic-routing.html
-app.get('/', function (req, res) {
-  res.sendFile(__dirname + '/views/index.html');
+// Enable CORS for testing from different origins
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
 });
 
-// your first API endpoint...
-app.get('/api/hello', function (req, res) {
-  res.json({ greeting: 'hello API' });
+// Root route to serve the frontend
+app.get("/", (req, res) => {
+    res.sendFile(__dirname + "/public/index.html");
 });
 
-// listen for requests :)
-var listener = app.listen(process.env.PORT || 3000, function () {
-  console.log('Your app is listening on port ' + listener.address().port);
+// API endpoint for header parsing
+app.get("/api/whoami", (req, res) => {
+    // Extract IP address (works locally and on Vercel with X-Forwarded-For)
+    const ipaddress = req.headers["x-forwarded-for"]?.split(",")[0] || req.ip;
+
+    // Extract preferred language from Accept-Language header
+    const language = req.headers["accept-language"]?.split(",")[0] || "en-US";
+
+    // Extract software/system info from User-Agent header
+    const software = req.headers["user-agent"] || "Unknown";
+
+    // Return JSON response
+    res.json({
+        ipaddress,
+        language,
+        software
+    });
+});
+
+// Start the server
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });

@@ -1,3 +1,9 @@
 # Request Header Parser Microservice
 
-This is the boilerplate for the Request Header Parser Microservice project. Instructions for building your project can be found at https://www.freecodecamp.org/learn/apis-and-microservices/apis-and-microservices-projects/request-header-parser-microservice
+A Node.js/Express microservice that parses HTTP request headers and returns the client's IP address, language, and software info.
+
+## Setup
+1. Clone the repository:
+   ```bash
+   git clone <your-repo-url>
+   cd request-header-parser
